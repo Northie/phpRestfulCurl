@@ -1,6 +1,6 @@
 <?php
 
-class httpClient {
+class curl {
 
 	private $client;
 	private $options = [
