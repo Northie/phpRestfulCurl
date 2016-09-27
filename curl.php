@@ -1,14 +1,24 @@
 <?php
 
-class curl {
+class httpClient {
 
 	private $client;
-	private $options = array(
+	private $options = [
 		\CURLOPT_RETURNTRANSFER=>true
-	);
+	];
 
-	public function __construct() {
+	public function __construct($options=false) {
 		$this->client = curl_init();
+                
+                foreach ($this->options as $opt=> $value) {
+                    curl_setopt($this->client, $opt, $value);
+		}
+                
+                if($options) {
+                    foreach ($options as $opt=> $value) {
+                        curl_setopt($this->client, $opt, $value);
+                    }
+                }
 	}
 
 	public function post($url, $data = false, $headers = false) {
@@ -26,10 +36,6 @@ class curl {
 			curl_setopt($this->client, \CURLOPT_HTTPHEADER, $headers);
 		}
 
-
-		foreach ($this->options as $opt=> $value) {
-			curl_setopt($this->client, $opt, $value);
-		}
 
 		return curl_exec($this->client);
 	}
@@ -52,9 +58,6 @@ class curl {
 			curl_setopt($this->client, \CURLOPT_HTTPHEADER, $headers);
 		}
 
-		foreach ($this->options as $opt=> $value) {
-			curl_setopt($this->client, $opt, $value);
-		}
 
 		return curl_exec($this->client);
 	}
@@ -76,9 +79,7 @@ class curl {
 		}
 
 
-		foreach ($this->options as $opt=> $value) {
-			curl_setopt($this->client, $opt, $value);
-		}
+
 
 		return curl_exec($this->client);
 	}
@@ -95,11 +96,6 @@ class curl {
 			curl_setopt($this->client, \CURLOPT_POSTFIELDS, $query);
 		}
 
-		if (is_array($headers)) {
-			curl_setopt($this->client, \CURLOPT_HTTPHEADER, $headers);
-		}
-
-
 		foreach ($this->options as $opt=> $value) {
 			curl_setopt($this->client, $opt, $value);
 		}
@@ -110,15 +106,15 @@ class curl {
 	//map required fucntions to http verb methods
 
 	public function create() {
-		return call_user_func_array(array($this, 'post'), func_get_args());
+		return call_user_func_array([$this, 'post'], func_get_args());
 	}
 
 	public function read() {
-		return call_user_func_array(array($this, 'get'), func_get_args());
+		return call_user_func_array([$this, 'get'], func_get_args());
 	}
 
 	public function update() {
-		return call_user_func_array(array($this, 'put'), func_get_args());
+		return call_user_func_array([$this, 'put'], func_get_args());
 	}
 
 	/*
